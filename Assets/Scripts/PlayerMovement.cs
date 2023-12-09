@@ -10,12 +10,15 @@ public class PlayerMovement : MonoBehaviour
     private InputManager input;
     [SerializeField]
     private float speed = 3f;
-    private Rigidbody2D rb;
-    private bool isGrounded = false;
+    public Rigidbody2D rb;
+    [HideInInspector]
+    public bool isGrounded = false;
     public float jumpForce = 10f;
     public LayerMask groundMask;
     private SpriteRenderer spriteRenderer;
     private Animator animator;
+    [SerializeField]
+    private GameLogic gameLogic;
 
     private void Start()
     {
@@ -63,6 +66,13 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             animator.SetTrigger("Jump");
+        }
+    }
+
+
+    private void OnTriggerEnter2D(Collider2D other) {
+        if (other.gameObject.name == "FallBox") {
+            gameLogic.SetPlayerDead(true);
         }
     }
 }
