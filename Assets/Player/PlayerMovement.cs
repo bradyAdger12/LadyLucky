@@ -21,7 +21,7 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private void Update () {
-         if (Physics2D.Raycast(transform.position, transform.up * -1, transform.localScale.x / 1.5f, mask))
+         if (Physics2D.Raycast(transform.position, transform.up * -1, transform.localScale.y / 1.5f, mask))
         {
             isGrounded = true;
         } else {
