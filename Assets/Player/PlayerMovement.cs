@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,35 +13,38 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody2D rb;
     private bool isGrounded = false;
     public float jumpForce = 10f;
+    public LayerMask mask;
 
-    private void Awake () {
+    private void Awake()
+    {
         input = GetComponent<InputManager>();
     }
 
-    private void Start () {
+    private void Update () {
+         if (Physics2D.Raycast(transform.position, transform.up * -1, transform.localScale.x / 1.5f, mask))
+        {
+            isGrounded = true;
+        } else {
+            isGrounded = false;
+        }
+    }
+
+    private void Start()
+    {
         rb = GetComponent<Rigidbody2D>();
     }
 
-    private void FixedUpdate() {
-       rb.velocity = new Vector2(input.moveVector.x * speed, rb.velocity.y);
+    private void FixedUpdate()
+    {
+        transform.position += new Vector3(input.moveVector.x * speed, 0, 0) * Time.fixedDeltaTime;
     }
 
 
-    public void Jump() {
-        if (isGrounded) {
+    public void Jump()
+    {
+        if (isGrounded)
+        {
             rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-        }
-    }
-
-
-    private void OnCollisionEnter2D(Collision2D other) {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Ground")) {
-            isGrounded = true;
-        }
-    }
-    private void OnCollisionExit2D(Collision2D other) {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Ground")) {
-            isGrounded = false;
         }
     }
 }
