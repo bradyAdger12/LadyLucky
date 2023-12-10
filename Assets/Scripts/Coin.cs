@@ -5,6 +5,7 @@ using UnityEngine;
 public class Coin : MonoBehaviour
 {
     // Start is called before the first frame update
+    public GameLogic gameLogic;
     void Start()
     {
         
@@ -19,6 +20,7 @@ public class Coin : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other) {
         if (other.gameObject.name == "Player") {
             Destroy(gameObject);
+            gameLogic.incrementScore();
         }
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -13,6 +14,9 @@ public class GameLogic : MonoBehaviour
     public GameObject virtualCamera;
     public GameObject canvas;
     public GameObject lifePrefab;
+    public GameObject scoreUI;
+    private int score = 0;
+    private TMP_Text scoreText;
     List<GameObject> lives = new();
 
     public int numLives = 3;
@@ -20,6 +24,10 @@ public class GameLogic : MonoBehaviour
     void Awake()
     {
         InitLives();
+        scoreText = scoreUI.GetComponent<TMP_Text>();
+        scoreText.SetText("0");
+        
+        
     }
 
     // Update is called once per frame
@@ -30,7 +38,15 @@ public class GameLogic : MonoBehaviour
     public void LoadNextScene()
     {
         int nextSceneBuildIndex = SceneManager.GetActiveScene().buildIndex + 1;
-        SceneManager.LoadScene(nextSceneBuildIndex);
+        if (SceneManager.GetSceneByBuildIndex(nextSceneBuildIndex).IsValid())
+        {
+            SceneManager.LoadScene(nextSceneBuildIndex);
+        }
+    }
+
+    public void incrementScore() {
+        score += 1;
+        scoreText.SetText(score.ToString());
     }
 
     public void InitLives()
@@ -51,7 +67,9 @@ public class GameLogic : MonoBehaviour
             Destroy(lives.Last());
             lives.RemoveAt(lives.Count - 1);
             Respawn(lives.Count == 0);
-            if (lives.Count == 0) {
+            if (lives.Count == 0)
+            {
+                scoreText.SetText("0");
                 InitLives();
             }
         }
