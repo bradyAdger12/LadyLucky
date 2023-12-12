@@ -20,8 +20,8 @@ public class ParallaxBackground : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
-        // Vector3 deltaMovement = cam.transform.position - lastCameraPosition;
-        // transform.position += new Vector3(deltaMovement.x * parallax.x, deltaMovement.y * parallax.y, 0);
-        // lastCameraPosition = cam.transform.position;
+        Vector3 deltaMovement = cam.transform.position - lastCameraPosition;
+        transform.position += new Vector3(deltaMovement.x * parallax.x, deltaMovement.y * parallax.y, 0);
+        lastCameraPosition = cam.transform.position;
     }
 }
