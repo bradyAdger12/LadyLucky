@@ -30,7 +30,6 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        HandleSpriteRenderer();
         animator.SetInteger("IsRunning", Math.Abs(Mathf.RoundToInt(input.moveVector.x)));
         if (Physics2D.Raycast(transform.position, transform.up * -1, transform.localScale.y / 1.5f, groundMask))
         {
@@ -44,6 +43,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        HandleSpriteRenderer();
         transform.position += new Vector3(input.moveVector.x * speed, 0, 0) * Time.fixedDeltaTime;
     }
 

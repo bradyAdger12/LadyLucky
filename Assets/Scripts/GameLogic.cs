@@ -54,7 +54,7 @@ public class GameLogic : MonoBehaviour
         for (int i = 0; i < numLives; i++)
         {
             RectTransform rectTransform = canvas.GetComponent<RectTransform>();
-            GameObject life = Instantiate(lifePrefab, new Vector3(rectTransform.position.x - (rectTransform.rect.width / 2) + ((i * 40) + 30), rectTransform.rect.height - 30, 0), Quaternion.identity);
+            GameObject life = Instantiate(lifePrefab, new Vector3(rectTransform.position.x - (rectTransform.rect.width / 2) + ((i * 30) + 30), rectTransform.rect.height - 30, 0), Quaternion.identity);
             life.transform.SetParent(canvas.transform);
             lives.Add(life);
         }
