@@ -10,21 +10,25 @@ public class PlayerMovement : MonoBehaviour
     private InputManager input;
     [SerializeField]
     private float speed = 3f;
-    public Rigidbody2D rb;
+    private Rigidbody2D rb;
     [HideInInspector]
     public bool isGrounded = false;
     public float jumpForce = 10f;
+    private int jumps;
     public LayerMask groundMask;
     private SpriteRenderer spriteRenderer;
     private Animator animator;
     [SerializeField]
     private GameLogic gameLogic;
+    private PlayerAudio playerAudio;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        jumps = 0;
         input = GetComponent<InputManager>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        playerAudio = GetComponent<PlayerAudio>();
         animator = GetComponent<Animator>();
     }
 
@@ -64,14 +68,23 @@ public class PlayerMovement : MonoBehaviour
     {
         if (isGrounded)
         {
-            rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            jumps = 0;
+        }
+        if (isGrounded || (!isGrounded && jumps < 2))
+        {
+            float doubleJumpVelocity = 1.1f;
+            rb.AddForce(Vector2.up * jumpForce * doubleJumpVelocity, ForceMode2D.Impulse);
             animator.SetTrigger("Jump");
+            jumps += 1;
+            playerAudio.PlayJumpSound();
         }
     }
 
 
-    private void OnTriggerEnter2D(Collider2D other) {
-        if (other.gameObject.name == "FallBox") {
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.name == "FallBox")
+        {
             gameLogic.LoseLife();
         }
     }

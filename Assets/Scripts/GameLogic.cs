@@ -15,6 +15,7 @@ public class GameLogic : MonoBehaviour
     public GameObject canvas;
     public GameObject lifePrefab;
     public GameObject scoreUI;
+    private AudioSource backgroundAudio;
     private int score = 0;
     private TMP_Text scoreText;
     List<GameObject> lives = new();
@@ -23,11 +24,15 @@ public class GameLogic : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        InitLives();
+        backgroundAudio = GetComponent<AudioSource>();
+        backgroundAudio.Play();
         scoreText = scoreUI.GetComponent<TMP_Text>();
         scoreText.SetText("0");
-        
-        
+        foreach (Transform child in canvas.transform) {
+            if (child.name.Contains("Heart")) {
+                lives.Add(child.gameObject);
+            }
+        }
     }
 
     // Update is called once per frame
@@ -49,28 +54,15 @@ public class GameLogic : MonoBehaviour
         scoreText.SetText(score.ToString());
     }
 
-    public void InitLives()
-    {
-        for (int i = 0; i < numLives; i++)
-        {
-            RectTransform rectTransform = canvas.GetComponent<RectTransform>();
-            GameObject life = Instantiate(lifePrefab, new Vector3(rectTransform.position.x - (rectTransform.rect.width / 2) + ((i * 30) + 30), rectTransform.rect.height - 30, 0), Quaternion.identity);
-            life.transform.SetParent(canvas.transform);
-            lives.Add(life);
-        }
-    }
-
     public void LoseLife()
     {
         if (lives.Count > 0)
         {
-            Destroy(lives.Last());
-            lives.RemoveAt(lives.Count - 1);
+            lives.Last().SetActive(false);
             Respawn(lives.Count == 0);
             if (lives.Count == 0)
             {
                 scoreText.SetText("0");
-                InitLives();
             }
         }
     }
