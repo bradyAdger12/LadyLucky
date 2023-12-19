@@ -82,10 +82,14 @@ public class PlayerMovement : MonoBehaviour
 
 
     private void OnTriggerEnter2D(Collider2D other)
+
     {
         if (other.gameObject.name == "FallBox")
         {
             gameLogic.LoseLife();
+        } else if (other.gameObject.layer == LayerMask.NameToLayer("Hit")) {
+            gameLogic.LoseLife(false);
+            animator.SetTrigger("Hurt");
         }
     }
 }

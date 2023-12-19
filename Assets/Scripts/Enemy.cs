@@ -10,15 +10,36 @@ public class Enemy : MonoBehaviour
     public float projectileSpeed = 3f;
     private float totalAngle = 360f;
     private float radius = 5f;
+    [SerializeField]
+    private float dangerZoneRadius = 5f;
+    [SerializeField]
+    private float timeBetweenShots = 3.5f;
+    public LayerMask playerMask;
+    private bool shotProjectile = false;
     void Start()
     {
-        ShootProjectile();
+
     }
 
     // Update is called once per frame
     void Update()
     {
+        RaycastHit2D raycastHit2D = Physics2D.CircleCast(transform.position, dangerZoneRadius, Vector2.zero, 0f, playerMask);
+        if (raycastHit2D.collider != null && !shotProjectile)
+        {
+            InvokeRepeating("ShootProjectile", 0f, timeBetweenShots);
+            shotProjectile = true;
+        } else if (raycastHit2D.collider == null) {
+            shotProjectile = false;
+            CancelInvoke("ShootProjectile");
+        }
+    }
 
+    void OnDrawGizmosSelected()
+    {
+        // Draw a yellow sphere at the transform's position
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawSphere(transform.position, dangerZoneRadius);
     }
 
     void ShootProjectile()
@@ -42,10 +63,6 @@ public class Enemy : MonoBehaviour
             {
                 Vector3 shootDirection = (projectilePosition - center).normalized;
                 rb.velocity = shootDirection * projectileSpeed;
-            }
-            else
-            {
-                Debug.LogWarning("Rigidbody component not found on the projectile prefab.");
             }
         }
     }

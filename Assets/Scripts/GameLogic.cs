@@ -18,9 +18,10 @@ public class GameLogic : MonoBehaviour
     private AudioSource backgroundAudio;
     private int score = 0;
     private TMP_Text scoreText;
-    List<GameObject> lives = new();
 
     public int numLives = 3;
+    private List<GameObject> lives = new();
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -28,11 +29,14 @@ public class GameLogic : MonoBehaviour
         backgroundAudio.Play();
         scoreText = scoreUI.GetComponent<TMP_Text>();
         scoreText.SetText("0");
-        foreach (Transform child in canvas.transform) {
-            if (child.name.Contains("Heart")) {
+        foreach (Transform child in canvas.transform)
+        {
+            if (child.name.Contains("Heart"))
+            {
                 lives.Add(child.gameObject);
             }
         }
+
     }
 
     // Update is called once per frame
@@ -49,21 +53,23 @@ public class GameLogic : MonoBehaviour
         }
     }
 
-    public void incrementScore() {
+    public void incrementScore()
+    {
         score += 1;
         scoreText.SetText(score.ToString());
     }
 
-    public void LoseLife()
+    public void LoseLife(bool fellOffMap = true)
     {
-        if (lives.Count > 0)
+        numLives -= 1;
+        lives[numLives].SetActive(false);
+        if (fellOffMap || numLives == 0)
         {
-            lives.Last().SetActive(false);
-            Respawn(lives.Count == 0);
-            if (lives.Count == 0)
-            {
-                scoreText.SetText("0");
-            }
+            Respawn(numLives == 0);
+        }
+        if (numLives == 0)
+        {
+            scoreText.SetText("0");
         }
     }
 
@@ -71,6 +77,10 @@ public class GameLogic : MonoBehaviour
     {
         if (Checkpoint.availableCheckpoints.Count > 0)
         {
+            if (playerIsDead)
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            }
             Checkpoint checkpoint = playerIsDead ? Checkpoint.availableCheckpoints.First() : Checkpoint.availableCheckpoints.Last();
             player.transform.position = new Vector3(checkpoint.transform.position.x, checkpoint.transform.position.y + 3, player.transform.position.z);
 
