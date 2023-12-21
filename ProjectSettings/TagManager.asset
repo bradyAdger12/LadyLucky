@@ -47,14 +47,14 @@ TagManager:
   - name: foliage
     uniqueID: 543615443
     locked: 0
-  - name: foreground
-    uniqueID: 383361655
-    locked: 0
   - name: enemy
     uniqueID: 714088487
     locked: 0
   - name: player
     uniqueID: 2429169391
+    locked: 0
+  - name: foreground
+    uniqueID: 383361655
     locked: 0
   - name: grass
     uniqueID: 3856348461

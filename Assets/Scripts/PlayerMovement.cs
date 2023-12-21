@@ -47,8 +47,10 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        HandleSpriteRenderer();
-        transform.position += new Vector3(input.moveVector.x * speed, 0, 0) * Time.fixedDeltaTime;
+        if (!gameLogic.playerIsDead) {
+            HandleSpriteRenderer();
+            transform.position += new Vector3(input.moveVector.x * speed, 0, 0) * Time.fixedDeltaTime;
+        }
     }
 
     private void HandleSpriteRenderer()
@@ -87,9 +89,19 @@ public class PlayerMovement : MonoBehaviour
         if (other.gameObject.name == "FallBox")
         {
             gameLogic.LoseLife();
-        } else if (other.gameObject.layer == LayerMask.NameToLayer("Hit")) {
-            gameLogic.LoseLife(false);
-            animator.SetTrigger("Hurt");
+        }
+        else if (other.gameObject.layer == LayerMask.NameToLayer("Hit"))
+        {
+            gameLogic.LoseLife();
+            Debug.Log(gameLogic.numLives);
+            if (gameLogic.numLives == 0)
+            {
+                animator.SetTrigger("Die");
+            }
+            else
+            {
+                animator.SetTrigger("Hurt");
+            }
         }
     }
 }

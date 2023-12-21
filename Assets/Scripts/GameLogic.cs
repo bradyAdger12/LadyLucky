@@ -20,6 +20,8 @@ public class GameLogic : MonoBehaviour
     private TMP_Text scoreText;
 
     public int numLives = 3;
+    [HideInInspector]
+    public bool playerIsDead = false;
     private List<GameObject> lives = new();
 
     // Start is called before the first frame update
@@ -47,8 +49,9 @@ public class GameLogic : MonoBehaviour
     public void LoadNextScene()
     {
         int nextSceneBuildIndex = SceneManager.GetActiveScene().buildIndex + 1;
-        if (SceneManager.GetSceneByBuildIndex(nextSceneBuildIndex).IsValid())
+        if (nextSceneBuildIndex > -1)
         {
+            Debug.Log("load");
             SceneManager.LoadScene(nextSceneBuildIndex);
         }
     }
@@ -59,31 +62,28 @@ public class GameLogic : MonoBehaviour
         scoreText.SetText(score.ToString());
     }
 
-    public void LoseLife(bool fellOffMap = true)
+    public void LoseLife()
     {
         numLives -= 1;
         lives[numLives].SetActive(false);
-        if (fellOffMap || numLives == 0)
-        {
-            Respawn(numLives == 0);
-        }
         if (numLives == 0)
         {
-            scoreText.SetText("0");
+            playerIsDead = true;
+            Invoke("ReloadScene", 2f);
         }
     }
 
-    public void Respawn(bool playerIsDead = false)
-    {
-        if (Checkpoint.availableCheckpoints.Count > 0)
-        {
-            if (playerIsDead)
-            {
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-            }
-            Checkpoint checkpoint = playerIsDead ? Checkpoint.availableCheckpoints.First() : Checkpoint.availableCheckpoints.Last();
-            player.transform.position = new Vector3(checkpoint.transform.position.x, checkpoint.transform.position.y + 3, player.transform.position.z);
-
-        }
+    private void ReloadScene () {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
+
+    // private void Respawn()
+    // {
+    //     if (Checkpoint.availableCheckpoints.Count > 0)
+    //     {
+    //         Checkpoint checkpoint = playerIsDead ? Checkpoint.availableCheckpoints.First() : Checkpoint.availableCheckpoints.Last();
+    //         player.transform.position = new Vector3(checkpoint.transform.position.x, checkpoint.transform.position.y + 3, player.transform.position.z);
+
+    //     }
+    // }
 }
