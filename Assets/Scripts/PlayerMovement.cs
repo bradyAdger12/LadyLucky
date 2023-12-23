@@ -97,10 +97,12 @@ public class PlayerMovement : MonoBehaviour
             if (gameLogic.numLives == 0)
             {
                 animator.SetTrigger("Die");
+                playerAudio.PlayPlayerDeadAudio();
             }
             else
             {
                 animator.SetTrigger("Hurt");
+                playerAudio.PlayPlayerHitAudio();
             }
         }
     }

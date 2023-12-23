@@ -9,6 +9,8 @@ public class PlayerAudio : MonoBehaviour
     private InputManager inputManager;
     public AudioSource walkingAudioSource;
     public AudioSource jumpingAudioSource;
+    public AudioSource playerDeadAudioSource;
+    public AudioSource playerHitAudioSource;
     private PlayerMovement playerMovement;
     void Start()
     {
@@ -30,5 +32,13 @@ public class PlayerAudio : MonoBehaviour
 
     public void PlayJumpSound () {
         jumpingAudioSource.Play();
+    }
+
+    public void PlayPlayerDeadAudio () {
+        playerDeadAudioSource.Play();
+    }
+
+    public void PlayPlayerHitAudio () {
+        playerHitAudioSource.Play();
     }
 }
