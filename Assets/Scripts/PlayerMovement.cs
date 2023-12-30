@@ -16,6 +16,7 @@ public class PlayerMovement : MonoBehaviour
     public float jumpForce = 10f;
     private int jumps;
     public LayerMask groundMask;
+    public LayerMask enemyMask;
     private SpriteRenderer spriteRenderer;
     private Animator animator;
     [SerializeField]
@@ -82,18 +83,33 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    private void OnCollisionEnter2D(Collision2D other) {
+
+        // Player lands on top of enemy
+        if (other.gameObject.layer == LayerMask.NameToLayer("Enemy") && Physics2D.Raycast(transform.position, Vector2.down, transform.localScale.y, enemyMask)) {
+            rb.AddForce(Vector2.up * 8, ForceMode2D.Impulse);
+            Enemy enemy = other.gameObject.GetComponent<Enemy>();
+            playerAudio.PlayKillingEnemySound();
+            enemy.Die();
+        }
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
-
     {
+        // Player falls off map
         if (other.gameObject.name == "FallBox")
         {
-            gameLogic.LoseLife();
+            gameLogic.LoseLife(true);
+            if (gameLogic.numLives == 0) {
+                animator.SetTrigger("Die");
+                playerAudio.PlayPlayerDeadAudio();
+            }
         }
+
+        // Player is struck by projectile
         else if (other.gameObject.layer == LayerMask.NameToLayer("Hit"))
         {
             gameLogic.LoseLife();
-            Debug.Log(gameLogic.numLives);
             if (gameLogic.numLives == 0)
             {
                 animator.SetTrigger("Die");

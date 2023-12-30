@@ -9,6 +9,7 @@ public class Enemy : MonoBehaviour
     public int numProjectiles = 8;
     public float projectileSpeed = 3f;
     private float totalAngle = 360f;
+    private BoxCollider2D collider2d;
     private float radius = 5f;
     [SerializeField]
     private float dangerZoneRadius = 5f;
@@ -16,22 +17,36 @@ public class Enemy : MonoBehaviour
     private float timeBetweenShots = 3.5f;
     public LayerMask playerMask;
     private bool shotProjectile = false;
+    private bool canShootProjectile = true;
+    private bool isDead = false;
+    
     void Start()
     {
-
+        collider2d = GetComponent<BoxCollider2D>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        RaycastHit2D raycastHit2D = Physics2D.CircleCast(transform.position, dangerZoneRadius, Vector2.zero, 0f, playerMask);
-        if (raycastHit2D.collider != null && !shotProjectile)
-        {
-            InvokeRepeating("ShootProjectile", 0f, timeBetweenShots);
-            shotProjectile = true;
-        } else if (raycastHit2D.collider == null) {
-            shotProjectile = false;
-            CancelInvoke("ShootProjectile");
+        if (canShootProjectile) {
+            RaycastHit2D raycastHit2D = Physics2D.CircleCast(transform.position, dangerZoneRadius, Vector2.zero, 0f, playerMask);
+            if (raycastHit2D.collider != null && !shotProjectile)
+            {
+                InvokeRepeating("ShootProjectile", 0f, timeBetweenShots);
+                shotProjectile = true;
+            } else if (raycastHit2D.collider == null) {
+                shotProjectile = false;
+                CancelInvoke("ShootProjectile");
+            }
+        }
+
+        if (isDead) {
+            canShootProjectile = false;
+            collider2d.isTrigger = true;
+            transform.localScale -= new Vector3(.07f, .07f, 0);
+            if (transform.localScale.x < 0) {
+                Destroy(gameObject);
+            }
         }
     }
 
@@ -40,6 +55,10 @@ public class Enemy : MonoBehaviour
         // Draw a yellow sphere at the transform's position
         Gizmos.color = Color.yellow;
         Gizmos.DrawSphere(transform.position, dangerZoneRadius);
+    }
+
+    public void Die () {
+        isDead = true;
     }
 
     void ShootProjectile()

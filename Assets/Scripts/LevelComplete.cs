@@ -21,14 +21,15 @@ public class LevelComplete : MonoBehaviour
 
     private void LoadScene()
     {
-        gameLogic.LoadNextScene();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        gameLogic.playerIsDead = true;
-        levelCompleteAudioSource.Play();
-        Invoke("LoadScene", 3f);
-
+        if (other.gameObject.layer == LayerMask.NameToLayer("Player")) {
+            gameLogic.playerIsDead = true;
+            levelCompleteAudioSource.Play();
+            Invoke("LoadScene", 3f);
+        }
     }
 }

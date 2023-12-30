@@ -11,6 +11,7 @@ public class PlayerAudio : MonoBehaviour
     public AudioSource jumpingAudioSource;
     public AudioSource playerDeadAudioSource;
     public AudioSource playerHitAudioSource;
+    public AudioSource playerKillingEnemySound;
     private PlayerMovement playerMovement;
     void Start()
     {
@@ -28,6 +29,10 @@ public class PlayerAudio : MonoBehaviour
         } else {
             walkingAudioSource.Stop();
         }
+    }
+
+    public void PlayKillingEnemySound () {
+        playerKillingEnemySound.Play();
     }
 
     public void PlayJumpSound () {

@@ -62,7 +62,7 @@ public class GameLogic : MonoBehaviour
         scoreText.SetText(score.ToString());
     }
 
-    public void LoseLife()
+    public void LoseLife(bool didFall = false)
     {
         numLives -= 1;
         lives[numLives].SetActive(false);
@@ -70,6 +70,8 @@ public class GameLogic : MonoBehaviour
         {
             playerIsDead = true;
             Invoke("ReloadScene", 2f);
+        } if (didFall) {
+            Respawn();
         }
     }
 
@@ -77,13 +79,13 @@ public class GameLogic : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
-    // private void Respawn()
-    // {
-    //     if (Checkpoint.availableCheckpoints.Count > 0)
-    //     {
-    //         Checkpoint checkpoint = playerIsDead ? Checkpoint.availableCheckpoints.First() : Checkpoint.availableCheckpoints.Last();
-    //         player.transform.position = new Vector3(checkpoint.transform.position.x, checkpoint.transform.position.y + 3, player.transform.position.z);
+    public void Respawn()
+    {
+        if (Checkpoint.availableCheckpoints.Count > 0)
+        {
+            Checkpoint checkpoint = Checkpoint.availableCheckpoints.Last();
+            player.transform.position = new Vector3(checkpoint.transform.position.x, checkpoint.transform.position.y + 3, player.transform.position.z);
 
-    //     }
-    // }
+        }
+    }
 }
